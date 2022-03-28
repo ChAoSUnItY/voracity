@@ -98,7 +98,8 @@ fn multispace0_(input voidptr, args ...voidptr) Result {
 }
 
 fn multispace1_(input voidptr, args ...voidptr) Result {
-	runes := str(input).runes()
+	s := str(input)
+	runes := s.runes()
 	result, index := zom(runes, fn (r rune) bool {
 		return r in voracity.ws_set
 	})

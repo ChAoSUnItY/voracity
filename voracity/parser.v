@@ -64,6 +64,21 @@ pub fn parse(input voidptr, combinator Combinator) Result {
 //				Combinators				   //
 // ======================================= //
 
+pub fn byte(b byte) Combinator {
+	ascii_str := b.ascii_str()
+	return Combinator{tag_, [ptr(ascii_str)]}
+}
+
+pub fn rune(r rune) Combinator {
+	str := r.str()
+	return Combinator{tag_, [ptr(str)]}
+}
+
+pub fn runes(r []rune) Combinator {
+	str := r.string()
+	return Combinator{tag_, [ptr(str)]}
+}
+
 pub fn tag(tag string) Combinator {
 	return Combinator{tag_, [ptr(tag)]}
 }

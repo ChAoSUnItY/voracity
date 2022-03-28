@@ -69,6 +69,11 @@ pub fn byte(b byte) Combinator {
 	return Combinator{tag_, [ptr(ascii_str)]}
 }
 
+pub fn bytes(b []byte) Combinator {
+	str := b.bytestr()
+	return Combinator{tag_, [ptr(str)]}
+}
+
 pub fn rune(r rune) Combinator {
 	str := r.str()
 	return Combinator{tag_, [ptr(str)]}

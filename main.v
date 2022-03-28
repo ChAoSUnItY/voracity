@@ -3,8 +3,8 @@ module main
 import voracity
 
 fn main() {
-	a := "abcd"
-	b := voracity.parse_str(a, voracity.multispace0())
-	
-	println(b.str_t<string, string>())
+	a := ' abcd'
+	result := voracity.parse_str(a, voracity.alpha1())
+
+	println(result.str_t<string, string>())
 }

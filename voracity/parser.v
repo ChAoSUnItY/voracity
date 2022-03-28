@@ -106,7 +106,7 @@ fn multispace1_(input voidptr, args ...voidptr) Result {
 
 	return if index == 0 {
 		// No match
-		err(make_error('multispace1', s, '`A`...`Z` | `a`...`z`'))
+		err(make_error('multispace1', s, '`(`\\t` | `\\r` | `\\n` | ` `)`'))
 	} else {
 		ok(ptr(runes[index..].string()), ptr(result))
 	}

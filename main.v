@@ -4,5 +4,5 @@ import voracity
 
 fn main() {
 	a := 'abcd'
-	println(voracity.parse(a, voracity.tag("ab"))?.destruct())
+	println(voracity.parse<string, string>(a, voracity.tag("ab"))?)
 }

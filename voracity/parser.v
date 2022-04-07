@@ -6,16 +6,8 @@ const (
 	ws_set = [`\t`, `\r`, `\n`, ` `]
 )
 
-type CombinatorFn<K, V> = fn (input K, args ...voidptr) ?Result<K, V>
-
-struct Result<K, V> {
-	remain K
-	result V
-}
-
-pub fn (r Result<K, V>) destruct() (K, V) {
-	return r.remain, r.result
-}
+type CombinatorFn<K, V> = fn (input K, args ...voidptr) ?(K, V)
+type CombinatorStrFn = fn (input string, args ...voidptr) ?(string, string)
 
 struct ParseError {
 	Error
@@ -28,79 +20,75 @@ fn (err ParseError) msg() string {
 	return 'Unable to parse with functor `$err.combinator_name`:\nGot:      `$err.input`\nRequires: `$err.predict`'
 }
 
-struct Combinator<K, V> {
-	comb_fn CombinatorFn<K, V>
-	args    []voidptr
-}
-
 fn voidptr_to_str<T>(vptr voidptr) string {
 	return $if T is string { unsafe {
 			str(vptr)
 		} } $else { vptr }
 }
 
-pub fn parse<K, V>(input string, combinator Combinator<K, V>) ?Result<K, V> {
-	return combinator.comb_fn(input, combinator.args)
+pub fn parse<K, V>(input K, combinator (CombinatorFn<K, V>, []voidptr)) ?(K, V) {
+	func, args := combinator
+	return func(input, args)
 }
 
 // ======================================= //
 //				Combinators				   //
 // ======================================= //
 
-pub fn byte(b byte) Combinator<string, string> {
+pub fn byte(b byte) (CombinatorStrFn, []voidptr) {
 	ascii_str := b.ascii_str()
-	return Combinator<string, string>{tag_, [ptr(ascii_str)]}
+	return tag_, [ptr(ascii_str)]
 }
 
-pub fn bytes(b []byte) Combinator<string, string> {
+pub fn bytes(b []byte) (CombinatorStrFn, []voidptr){
 	str := b.bytestr()
-	return Combinator<string, string>{tag_, [ptr(str)]}
+	return tag_, [ptr(str)]
 }
 
-pub fn rune(r rune) Combinator<string, string> {
+pub fn rune(r rune) (CombinatorStrFn, []voidptr) {
 	str := r.str()
-	return Combinator<string, string>{tag_, [ptr(str)]}
+	return tag_, [ptr(str)]
 }
 
-pub fn runes(r []rune) Combinator<string, string> {
+pub fn runes(r []rune) (CombinatorStrFn, []voidptr) {
 	str := r.string()
-	return Combinator<string, string>{tag_, [ptr(str)]}
+	return tag_, [ptr(str)]
 }
 
-pub fn tag(tag string) Combinator<string, string> {
-	return Combinator<string, string>{tag_, [ptr(tag)]}
+pub fn tag(tag string) (CombinatorStrFn, []voidptr) {
+	return tag_, [ptr(tag)]
 }
 
-fn tag_(input string, args ...voidptr) ?Result<string, string> {
+fn tag_(input string, args ...voidptr) ?(string, string) {
 	input_str := input
 	tag_str := str(args[0])
 
 	return if input_str.starts_with(tag_str) {
 		remain := input_str.replace_once(tag_str, '')
-		ok(remain, tag_str)
+		remain, tag_str
 	} else {
 		make_error('tag', input_str, tag_str)
 	}
 }
 
-pub fn multispace0() Combinator<string, string> {
-	return Combinator<string, string>{multispace0_, []}
+pub fn multispace0() (CombinatorStrFn, []voidptr) {
+	return multispace0_, []voidptr{}
 }
 
-pub fn multispace1() Combinator<string, string> {
-	return Combinator<string, string>{multispace1_, []}
+pub fn multispace1() (CombinatorStrFn, []voidptr) {
+	return multispace1_, []voidptr{}
 }
 
-fn multispace0_(input string, args ...voidptr) ?Result<string, string> {
+fn multispace0_(input string, args ...voidptr) ?(string, string) {
 	runes := input.runes()
 	result, index := zom(runes, fn (r rune) bool {
 		return r in voracity.ws_set
 	})
 
-	return ok(runes[index..].string(), result)
+	return runes[index..].string(), result
 }
 
-fn multispace1_(input string, args ...voidptr) ?Result<string, string> {
+fn multispace1_(input string, args ...voidptr) ?(string, string) {
 	runes := input.runes()
 	result, index := zom(runes, fn (r rune) bool {
 		return r in voracity.ws_set
@@ -110,19 +98,19 @@ fn multispace1_(input string, args ...voidptr) ?Result<string, string> {
 		// No match
 		IError(make_error('multispace1', input, '`(`\\t` | `\\r` | `\\n` | ` `)`'))
 	} else {
-		ok(runes[index..].string(), result)
+		runes[index..].string(), result
 	}
 }
 
-pub fn alpha0() Combinator<string, string> {
-	return Combinator<string, string>{alpha0_, []}
+pub fn alpha0() (CombinatorStrFn, []voidptr) {
+	return alpha0_, []voidptr{}
 }
 
-pub fn alpha1() Combinator<string, string> {
-	return Combinator<string, string>{alpha1_, []}
+pub fn alpha1() (CombinatorStrFn, []voidptr) {
+	return alpha1_, []voidptr{}
 }
 
-fn alpha0_(input string, args ...voidptr) ?Result<string, string> {
+fn alpha0_(input string, args ...voidptr) ?(string, string) {
 	runes := input.runes()
 	result, index := zom(runes, fn (r rune) bool {
 		return match r {
@@ -132,10 +120,10 @@ fn alpha0_(input string, args ...voidptr) ?Result<string, string> {
 		}
 	})
 
-	return ok(runes[index..].string(), result)
+	return runes[index..].string(), result
 }
 
-fn alpha1_(input string, args ...voidptr) ?Result<string, string> {
+fn alpha1_(input string, args ...voidptr) ?(string, string) {
 	runes := input.runes()
 	result, index := zom(runes, fn (r rune) bool {
 		return match r {
@@ -149,7 +137,7 @@ fn alpha1_(input string, args ...voidptr) ?Result<string, string> {
 		// No match
 		make_error('alpha0', input, '`A`...`Z` | `a`...`z`')
 	} else {
-		ok(runes[index..].string(), result)
+		runes[index..].string(), result
 	}
 }
 
@@ -176,10 +164,6 @@ fn zom(runes []rune, predicate fn (rune) bool) (string, int) {
 	} else {
 		last_index + 1
 	}
-}
-
-fn ok<K, V>(k K, v V) Result<K, V> {
-	return Result<K, V>{k, v}
 }
 
 fn str(vptr voidptr) string {

@@ -1,6 +1,5 @@
 # Binaries for programs and plugins
 main
-voracity
 *.exe
 *.exe~
 *.so

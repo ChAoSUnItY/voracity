@@ -47,10 +47,28 @@ pub fn new_state(input string) State {
 	}
 }
 
-fn (state &State) get() string {
+pub fn (mut state State) advance(i int) {
+	state.pos += i
+}
+
+pub fn (state &State) get() string {
 	if state.pos >= state.input.len {
 		return ''
 	}
 
 	return state.input[state.pos..]
+}
+
+pub fn (state &State) preview(len int) string {
+	if state.pos >= state.input.len {
+		return ''
+	}
+
+	get := state.get()
+
+	if get.len >= len {
+		return get[..len]
+	}
+
+	return get
 }

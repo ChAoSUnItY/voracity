@@ -72,3 +72,16 @@ pub fn (state &State) preview(len int) string {
 
 	return get
 }
+
+pub fn (mut state State) error_here(expected string) {
+	state.error.pos = state.pos
+	state.error.expected = expected
+}
+
+pub fn (mut state State) recover() {
+	state.error.expected = ''
+}
+
+pub fn (state &State) errored() bool {
+	return state.error.expected != ''
+}

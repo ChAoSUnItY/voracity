@@ -9,7 +9,7 @@ pub struct State {
 mut:
 	pos int
 	cut int
-	error Error
+	error ParseError
 }
 
 pub fn ascii_whitespace(mut state State) {
@@ -74,14 +74,14 @@ pub fn (state &State) preview(len int) string {
 }
 
 pub fn (mut state State) error_here(expected string) {
-	state.error.pos = state.pos
-	state.error.expected = expected
+	state.error.code = state.pos
+	state.error.msg = expected
 }
 
 pub fn (mut state State) recover() {
-	state.error.expected = ''
+	state.error.msg = ''
 }
 
 pub fn (state &State) errored() bool {
-	return state.error.expected != ''
+	return state.error.msg() != ''
 }

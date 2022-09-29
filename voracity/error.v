@@ -18,3 +18,30 @@ pub fn (error &ParseError) msg() string {
 pub fn (error ParseError) err() IError {
 	return IError(error)
 }
+
+// Fulfills IError's implementation
+[noinit]
+pub struct UnparsedError {
+mut:
+	msg string
+	code int
+}
+
+pub fn unparsed_error(unparsed string, location int) UnparsedError {
+	return UnparsedError{
+		unparsed,
+		location
+	}
+}
+
+pub fn (error &UnparsedError) code() int {
+	return error.code
+}
+
+pub fn (error &UnparsedError) msg() string {
+	return 'left: ${error.msg}'
+}
+
+pub fn (error UnparsedError) err() IError {
+	return IError(error)
+}

@@ -1,14 +1,14 @@
 module voracity
 
-import encoding.utf8 { raw_index, is_space }
+import encoding.utf8 { is_space, raw_index }
 
 [noinit]
 pub struct State {
 	input string
-	ws VoidParser
+	ws    VoidParser
 mut:
-	pos int
-	cut int
+	pos   int
+	cut   int
 	error ParseError
 }
 
@@ -42,7 +42,7 @@ pub fn no_whitespace(mut state State) {
 
 pub fn new_state(input string) State {
 	return State{
-		input: input,
+		input: input
 		ws: unicode_whitespace
 	}
 }

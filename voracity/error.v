@@ -3,7 +3,7 @@ module voracity
 // Fulfills IError's implementation
 pub struct ParseError {
 mut:
-	msg string
+	msg  string
 	code int
 }
 
@@ -12,7 +12,7 @@ pub fn (error &ParseError) code() int {
 }
 
 pub fn (error &ParseError) msg() string {
-	return 'offset: ${error.code}, expected: ${error.msg}'
+	return 'offset: $error.code, expected: $error.msg'
 }
 
 pub fn (error ParseError) err() IError {
@@ -23,15 +23,12 @@ pub fn (error ParseError) err() IError {
 [noinit]
 pub struct UnparsedError {
 mut:
-	msg string
+	msg  string
 	code int
 }
 
 pub fn unparsed_error(unparsed string, location int) UnparsedError {
-	return UnparsedError{
-		unparsed,
-		location
-	}
+	return UnparsedError{unparsed, location}
 }
 
 pub fn (error &UnparsedError) code() int {
@@ -39,7 +36,7 @@ pub fn (error &UnparsedError) code() int {
 }
 
 pub fn (error &UnparsedError) msg() string {
-	return 'left: ${error.msg}'
+	return 'left unparsed: $error.msg'
 }
 
 pub fn (error UnparsedError) err() IError {

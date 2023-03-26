@@ -1,3 +1,3 @@
 module voracity
 
-type VoidParser = fn (mut State)
+pub type Parser[I, O, R] = fn (I) !(O, R)

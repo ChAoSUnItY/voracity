@@ -6,3 +6,4 @@ main
 *.dylib
 *.dll
 vls.log
+.idea

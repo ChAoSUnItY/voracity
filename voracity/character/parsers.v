@@ -28,7 +28,14 @@ pub fn is_alphanumeric(input byte) bool {
 
 [inline]
 pub fn is_space(input byte) bool {
-	return input == 0x09 || input == 0x20
+	return match input {
+		`\t`, `\n`, `\v`, `\f`, `\r`, ` `, 0x85, 0xA0 {
+			true
+		}
+		else {
+			false
+		}
+	}
 }
 
 [inline]

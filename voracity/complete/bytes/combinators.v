@@ -6,6 +6,7 @@ enum ErrorKind {
 	is_not
 }
 
+[inline]
 pub fn tag(tag string) BytesParser {
 	return fn [tag] (input string) !(string, string) {
 		len := tag.len
@@ -18,6 +19,7 @@ pub fn tag(tag string) BytesParser {
 	}
 }
 
+[inline]
 pub fn tag_no_case(tag string) BytesParser {
 	return fn [tag] (input string) !(string, string) {
 		len := tag.len
@@ -30,6 +32,7 @@ pub fn tag_no_case(tag string) BytesParser {
 	}
 }
 
+[inline]
 pub fn is_not(arr string) BytesParser {
 	return fn [arr] (input string) !(string, string) {
 		if input.len == 0 {
@@ -51,6 +54,7 @@ pub fn is_not(arr string) BytesParser {
 	}
 }
 
+[inline]
 pub fn is_a(arr string) BytesParser {
 	return fn [arr] (input string) !(string, string) {
 		if input.len == 0 {

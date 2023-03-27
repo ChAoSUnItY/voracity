@@ -4,6 +4,7 @@ enum ErrorKind {
 	tag
 	tag_no_case
 	is_not
+	is_a
 }
 
 [inline]
@@ -58,7 +59,7 @@ pub fn is_not(arr string) BytesParser {
 pub fn is_a(arr string) BytesParser {
 	return fn [arr] (input string) !(string, string) {
 		if input.len == 0 {
-			return new_bytes_parser_error(input, .is_not)
+			return new_bytes_parser_error(input, .is_a)
 		}
 
 		pat := arr.bytes()

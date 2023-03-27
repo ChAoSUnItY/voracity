@@ -85,3 +85,13 @@ fn test_is_a() {
 		assert remain == remains[i]
 	}
 }
+
+fn test_is_a_err() {
+	hex := is_a('1234567890ABCDEF')
+	inputs := ['']
+	errors := inputs.map(new_bytes_parser_error(it, .is_a))
+
+	for i, input in inputs {
+		hex(input) or { assert errors[i] == err }
+	}
+}

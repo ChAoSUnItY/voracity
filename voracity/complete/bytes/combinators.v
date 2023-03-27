@@ -1,7 +1,5 @@
 module bytes
 
-import voracity
-
 enum ErrorKind {
 	tag
 	tag_no_case
@@ -42,8 +40,7 @@ pub fn is_not(arr string) BytesParser {
 		mut idx := 0
 
 		for idx < input.len {
-			if input[idx] in pat
-			{
+			if input[idx] in pat {
 				return input[..idx], input[idx..]
 			} else {
 				idx++
@@ -51,5 +48,26 @@ pub fn is_not(arr string) BytesParser {
 		}
 
 		return '', input
+	}
+}
+
+pub fn is_a(arr string) BytesParser {
+	return fn [arr] (input string) !(string, string) {
+		if input.len == 0 {
+			return new_bytes_parser_error(input, .is_not)
+		}
+
+		pat := arr.bytes()
+		mut idx := 0
+
+		for idx < input.len {
+			if input[idx] !in pat {
+				return input[..idx], input[idx..]
+			} else {
+				idx++
+			}
+		}
+
+		return input, ''
 	}
 }

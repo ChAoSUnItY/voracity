@@ -1,6 +1,6 @@
 module main
 
-import voracity.bytes
+import voracity.complete.bytes
 
 fn main() {
 	matched, remaining := bytes.tag('K')('KEK')!

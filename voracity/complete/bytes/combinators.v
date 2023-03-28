@@ -76,3 +76,24 @@ pub fn is_a(arr string) BytesParser {
 		return input, ''
 	}
 }
+
+[inline]
+pub fn take_while(predicate fn (byte) bool) BytesParser {
+	return fn [predicate] (input string) !(string, string) {
+		mut idx := 0
+
+		for idx < input.len {
+			if !predicate(input[idx]) {
+				break
+			} else {
+				idx++
+			}
+		}
+
+		return if idx != 0 {
+			input[..idx], input[idx..]
+		} else {
+			'', input
+		}
+	}
+}

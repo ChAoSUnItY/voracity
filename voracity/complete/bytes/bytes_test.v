@@ -1,5 +1,7 @@
 module bytes
 
+import voracity.character
+
 fn test_tag() {
 	hello_word_tag := tag('Hello')
 	inputs := ['Hello World']
@@ -93,5 +95,19 @@ fn test_is_a_err() {
 
 	for i, input in inputs {
 		hex(input) or { assert errors[i] == err }
+	}
+}
+
+fn test_take_while() {
+	is_alpha := take_while(character.is_alphabetic)
+	inputs := ['latin123', '12345', 'latin', '']
+	gots := ['latin', '', 'latin', '']
+	remains := ['123', '12345', '', '']
+
+	for i, input in inputs {
+		got, remain := is_alpha(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
 	}
 }

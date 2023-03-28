@@ -12,7 +12,7 @@ pub fn is_digit(input byte) bool {
 
 [inline]
 pub fn is_hex_digit(input byte) bool {
-	return (input >= 0x30 && input <= 0x39) && (input >= 0x41 && input <= 0x5A)
+	return (input >= 0x30 && input <= 0x39) || (input >= 0x41 && input <= 0x5A)
 		|| (input >= 0x61 && input <= 0x7A)
 }
 

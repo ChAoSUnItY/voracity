@@ -12,10 +12,10 @@ pub fn tag(tag string) BytesParser {
 	return fn [tag] (input string) !(string, string) {
 		len := tag.len
 
-		if input.len >= len && input.starts_with(tag) {
-			return input[..len], input[len..]
+		return if input.len >= len && input.starts_with(tag) {
+			input[..len], input[len..]
 		} else {
-			return new_bytes_parser_error(input, .tag)
+			new_bytes_parser_error(input, .tag)
 		}
 	}
 }
@@ -25,10 +25,10 @@ pub fn tag_no_case(tag string) BytesParser {
 	return fn [tag] (input string) !(string, string) {
 		len := tag.len
 
-		if input.len >= len && input[..len].to_lower() == tag.to_lower() {
-			return input[..len], input[len..]
+		return if input.len >= len && input[..len].to_lower() == tag.to_lower() {
+			input[..len], input[len..]
 		} else {
-			return new_bytes_parser_error(input, .tag_no_case)
+			new_bytes_parser_error(input, .tag_no_case)
 		}
 	}
 }
@@ -67,13 +67,13 @@ pub fn is_a(arr string) BytesParser {
 
 		for idx < input.len {
 			if input[idx] !in pat {
-				return input[..idx], input[idx..]
+				break
 			} else {
 				idx++
 			}
 		}
 
-		return input, ''
+		return input[..idx], input[idx..]
 	}
 }
 
@@ -90,10 +90,6 @@ pub fn take_while(predicate fn (byte) bool) BytesParser {
 			}
 		}
 
-		return if idx != 0 {
-			input[..idx], input[idx..]
-		} else {
-			'', input
-		}
+		return input[..idx], input[idx..]
 	}
 }

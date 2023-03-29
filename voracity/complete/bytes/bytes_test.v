@@ -59,6 +59,9 @@ fn test_is_not() {
 	for i, input in inputs {
 		got, remain := not_space(input)!
 
+		println(got)
+		println(remain)
+
 		assert got == gots[i]
 		assert remain == remains[i]
 	}

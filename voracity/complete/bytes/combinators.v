@@ -5,6 +5,7 @@ enum ErrorKind {
 	tag_no_case
 	is_not
 	is_a
+	take_while1
 }
 
 [inline]
@@ -91,5 +92,26 @@ pub fn take_while(predicate fn (byte) bool) BytesParser {
 		}
 
 		return input[..idx], input[idx..]
+	}
+}
+
+[inline]
+pub fn take_while1(predicate fn (byte) bool) BytesParser {
+	return fn [predicate] (input string) !(string, string) {
+		mut idx := 0
+
+		for idx < input.len {
+			if !predicate(input[idx]) {
+				break
+			} else {
+				idx++
+			}
+		}
+
+		return if idx == 0 {
+			new_bytes_parser_error(input, .take_while1)
+		} else {
+			input[..idx], input[idx..]
+		}
 	}
 }

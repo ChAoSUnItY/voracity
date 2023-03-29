@@ -114,3 +114,27 @@ fn test_take_while() {
 		assert remain == remains[i]
 	}
 }
+
+fn test_take_while1() {
+	is_alpha := take_while1(character.is_alphabetic)
+	inputs := ['latin123', 'latin']
+	gots := ['latin', 'latin']
+	remains := ['123', '']
+
+	for i, input in inputs {
+		got, remain := is_alpha(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_take_while1_err() {
+	is_alpha := take_while1(character.is_alphabetic)
+	inputs := ['12345', '']
+	errors := inputs.map(new_bytes_parser_error(it, .take_while1))
+
+	for i, input in inputs {
+		is_alpha(input) or { assert errors[i] == err }
+	}
+}

@@ -9,6 +9,7 @@ enum ErrorKind {
 	take_while_m_n
 	take_till1
 	take
+	take_until
 }
 
 [inline]
@@ -186,5 +187,23 @@ pub fn take(count int) BytesParser {
 		} else {
 			input[..count], input[count..]
 		}
+	}
+}
+
+[inline]
+pub fn take_until(tag string) BytesParser {
+	return fn [tag] (input string) !(string, string) {
+		tag_len := tag.len
+		mut idx := 0
+
+		for idx < input.len {
+			if idx + tag_len <= input.len && input[idx..idx + tag_len] == tag {
+				return input[..idx], input[idx..]
+			} else {
+				idx++
+			}
+		}
+
+		return new_bytes_parser_error(input, .take_until)
 	}
 }

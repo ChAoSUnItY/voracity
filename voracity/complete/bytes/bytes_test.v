@@ -178,3 +178,31 @@ fn test_take_till() {
 		assert remain == remains[i]
 	}
 }
+
+fn test_take_till1() {
+	is_colon := take_till1(fn (b byte) bool {
+		return b == ':'[0]
+	})
+	inputs := ['latin:123', '12345']
+	gots := ['latin', '12345']
+	remains := [':123', '']
+
+	for i, input in inputs {
+		got, remain := is_colon(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_take_till1_err() {
+	is_colon := take_till1(fn (b byte) bool {
+		return b == ':'[0]
+	})
+	inputs := [':empty matched', '']
+	errors := inputs.map(new_bytes_parser_error(it, .take_till1))
+
+	for i, input in inputs {
+		is_colon(input) or { assert errors[i] == err }
+	}
+}

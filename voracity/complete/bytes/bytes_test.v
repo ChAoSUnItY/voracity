@@ -162,3 +162,19 @@ fn test_take_while_m_n_err() {
 		is_alpha(input) or { assert errors[i] == err }
 	}
 }
+
+fn test_take_till() {
+	is_colon := take_till(fn (b byte) bool {
+		return b == ':'[0]
+	})
+	inputs := ['latin:123', ':empty matched', '12345', '']
+	gots := ['latin', '', '12345', '']
+	remains := [':123', ':empty matched', '', '']
+
+	for i, input in inputs {
+		got, remain := is_colon(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}

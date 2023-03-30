@@ -117,6 +117,7 @@ pub fn take_while1(predicate BytesPredicate) BytesParser {
 	}
 }
 
+[inline]
 pub fn take_while_m_n(predicate BytesPredicate, m int, n int) BytesParser {
 	return fn [predicate, m, n] (input string) !(string, string) {
 		mut idx := 0
@@ -134,5 +135,22 @@ pub fn take_while_m_n(predicate BytesPredicate, m int, n int) BytesParser {
 		} else {
 			new_bytes_parser_error(input, .take_while_m_n)
 		}
+	}
+}
+
+[inline]
+pub fn take_till(predicate BytesPredicate) BytesParser {
+	return fn [predicate] (input string) !(string, string) {
+		mut idx := 0
+
+		for idx < input.len {
+			if predicate(input[idx]) {
+				break
+			} else {
+				idx++
+			}
+		}
+
+		return input[..idx], input[idx..]
 	}
 }

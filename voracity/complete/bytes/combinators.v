@@ -6,6 +6,7 @@ enum ErrorKind {
 	is_not
 	is_a
 	take_while1
+	take_while_m_n
 }
 
 [inline]
@@ -79,7 +80,7 @@ pub fn is_a(arr string) BytesParser {
 }
 
 [inline]
-pub fn take_while(predicate fn (byte) bool) BytesParser {
+pub fn take_while(predicate BytesPredicate) BytesParser {
 	return fn [predicate] (input string) !(string, string) {
 		mut idx := 0
 
@@ -96,7 +97,7 @@ pub fn take_while(predicate fn (byte) bool) BytesParser {
 }
 
 [inline]
-pub fn take_while1(predicate fn (byte) bool) BytesParser {
+pub fn take_while1(predicate BytesPredicate) BytesParser {
 	return fn [predicate] (input string) !(string, string) {
 		mut idx := 0
 
@@ -112,6 +113,26 @@ pub fn take_while1(predicate fn (byte) bool) BytesParser {
 			new_bytes_parser_error(input, .take_while1)
 		} else {
 			input[..idx], input[idx..]
+		}
+	}
+}
+
+pub fn take_while_m_n(predicate BytesPredicate, m int, n int) BytesParser {
+	return fn [predicate, m, n] (input string) !(string, string) {
+		mut idx := 0
+
+		for idx < input.len && idx < n {
+			if !predicate(input[idx]) {
+				break
+			} else {
+				idx++
+			}
+		}
+
+		return if idx >= m && idx <= n {
+			input[..idx], input[idx..]
+		} else {
+			new_bytes_parser_error(input, .take_while_m_n)
 		}
 	}
 }

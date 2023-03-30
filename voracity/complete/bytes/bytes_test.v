@@ -206,3 +206,27 @@ fn test_take_till1_err() {
 		is_colon(input) or { assert errors[i] == err }
 	}
 }
+
+fn test_take() {
+	take6 := take(6)
+	inputs := ['1234567', 'things']
+	gots := ['123456', 'things']
+	remains := ['7', '']
+
+	for i, input in inputs {
+		got, remain := take6(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_take_err() {
+	take6 := take(6)
+	inputs := ['short', '']
+	errors := inputs.map(new_bytes_parser_error(it, .take))
+
+	for i, input in inputs {
+		take6(input) or { assert errors[i] == err }
+	}
+}

@@ -8,6 +8,7 @@ enum ErrorKind {
 	take_while1
 	take_while_m_n
 	take_till1
+	take
 }
 
 [inline]
@@ -173,6 +174,17 @@ pub fn take_till1(predicate BytesPredicate) BytesParser {
 			new_bytes_parser_error(input, .take_till1)
 		} else {
 			input[..idx], input[idx..]
+		}
+	}
+}
+
+[inline]
+pub fn take(count int) BytesParser {
+	return fn [count] (input string) !(string, string) {
+		return if input.len < count {
+			new_bytes_parser_error(input, .take)
+		} else {
+			input[..count], input[count..]
 		}
 	}
 }

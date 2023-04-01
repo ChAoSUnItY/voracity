@@ -4,25 +4,25 @@ import encoding.utf8
 
 [inline]
 pub fn is_alphabetic(input rune) bool {
-	return is_ascii(input) && ((int(input) >= 0x41 && int(input) <= 0x5A)
-		|| (int(input) >= 0x61 && int(input) <= 0x7A))
+	return (int(input) >= 0x41 && int(input) <= 0x5A)
+		|| (int(input) >= 0x61 && int(input) <= 0x7A)
 }
 
 [inline]
 pub fn is_digit(input rune) bool {
-	return is_ascii(input) && (int(input) >= 0x30 && int(input) <= 0x39)
+	return int(input) >= 0x30 && int(input) <= 0x39
 }
 
 [inline]
 pub fn is_hex_digit(input rune) bool {
-	return is_ascii(input) && (int(input) >= 0x30 && int(input) <= 0x39)
+	return (int(input) >= 0x30 && int(input) <= 0x39)
 		&& ((int(input) >= 0x41 && int(input) <= 0x5A)
 		|| (int(input) >= 0x61 && int(input) <= 0x7A))
 }
 
 [inline]
 pub fn is_oct_digit(input rune) bool {
-	return is_ascii(input) && (int(input) >= 0x30 && int(input) <= 0x37)
+	return int(input) >= 0x30 && int(input) <= 0x37
 }
 
 [inline]
@@ -37,7 +37,7 @@ pub fn is_space(input rune) bool {
 
 [inline]
 pub fn is_new_line(input rune) bool {
-	return is_ascii(input) && int(input) == 0x0A
+	return int(input) == 0x0A
 }
 
 [inline]

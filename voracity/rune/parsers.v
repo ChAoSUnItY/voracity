@@ -4,8 +4,7 @@ import encoding.utf8
 
 [inline]
 pub fn is_alphabetic(input rune) bool {
-	return (int(input) >= 0x41 && int(input) <= 0x5A)
-		|| (int(input) >= 0x61 && int(input) <= 0x7A)
+	return (int(input) >= 0x41 && int(input) <= 0x5A) || (int(input) >= 0x61 && int(input) <= 0x7A)
 }
 
 [inline]
@@ -15,8 +14,7 @@ pub fn is_digit(input rune) bool {
 
 [inline]
 pub fn is_hex_digit(input rune) bool {
-	return (int(input) >= 0x30 && int(input) <= 0x39)
-		&& ((int(input) >= 0x41 && int(input) <= 0x5A)
+	return (int(input) >= 0x30 && int(input) <= 0x39) && ((int(input) >= 0x41 && int(input) <= 0x5A)
 		|| (int(input) >= 0x61 && int(input) <= 0x7A))
 }
 

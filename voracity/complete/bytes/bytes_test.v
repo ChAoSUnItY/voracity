@@ -254,3 +254,27 @@ fn test_take_until_err() {
 		until_eof(input) or { assert errors[i] == err }
 	}
 }
+
+fn test_take_until1() {
+	until_eof := take_until1('eof')
+	inputs := ['hello, worldeof', '1eof2eof']
+	gots := ['hello, world', '1']
+	remains := ['eof', 'eof2eof']
+
+	for i, input in inputs {
+		got, remain := until_eof(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_take_until1_err() {
+	until_eof := take_until('eof')
+	inputs := ['hello, world', '', 'eof']
+	errors := inputs.map(new_bytes_parser_error(it, .take_until))
+
+	for i, input in inputs {
+		until_eof(input) or { assert errors[i] == err }
+	}
+}

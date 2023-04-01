@@ -3,7 +3,6 @@ module character
 import voracity
 
 pub type CharParser = fn (string) !(byte, string)
-pub type CharParserOpt = fn (string) ?(byte, string)
 
 pub type CharPredicate = fn (byte) bool
 

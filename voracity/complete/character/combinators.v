@@ -1,16 +1,16 @@
 module character
 
 enum ErrorKind {
-	char
+	tag
 }
 
 [inline]
-pub fn char(ch byte) CharParser {
+pub fn tag(ch byte) CharParser {
 	return fn [ch] (input string) !(byte, string) {
-		return if input[0] == ch {
+		return if input.len > 0 && input[0] == ch {
 			ch, input[1..]
 		} else {
-			new_char_parser_error(input, .char)
+			new_char_parser_error(input, .tag)
 		}
 	}
 }

@@ -1,5 +1,8 @@
 module bytes
 
+import voracity
+import voracity.complete.character
+
 enum ErrorKind {
 	tag
 	tag_no_case
@@ -11,7 +14,10 @@ enum ErrorKind {
 	take
 	take_until
 	take_until1
+	escaped
 	crlf
+	not_line_ending
+	line_ending
 }
 
 [inline]
@@ -233,6 +239,55 @@ pub fn take_until1(tag string) BytesParser {
 }
 
 [inline]
+pub fn escaped(normal voracity.IBytesParser, control_char u8, escapable voracity.IBytesParser) BytesParser {
+	return fn [normal, control_char, escapable] (input string) !(string, string) {
+		mut idx := 0
+
+		for idx < input.len {
+			current_len := input.len - idx
+
+			if _, remain := normal(input) {
+				if remain.len == 0 {
+					// No remaining
+					return input, ''
+				}
+				if remain.len == current_len {
+					// No consumption occured
+					return input[..idx], input[idx..]
+				} else {
+					idx++
+				}
+			} else {
+				if input[idx] == control_char {
+					if idx + 1 < input.len {
+						next_char := input[idx + 1].ascii_str()
+						_, remain := escapable(next_char)!
+
+						if remain.len == 0 {
+							// No remaining
+							return input, ''
+						} else {
+							idx += 2
+						}
+					} else {
+						// Invalid escape (out of bound)
+						return new_bytes_parser_error(input, .escaped)
+					}
+				} else {
+					if idx == 0 {
+						return new_bytes_parser_error(input, .escaped)
+					} else {
+						return input, ''
+					}
+				}
+			}
+		}
+
+		return input[..idx], input[idx..]
+	}
+}
+
+[inline]
 pub fn crlf() BytesParser {
 	return crlf_
 }
@@ -242,5 +297,49 @@ fn crlf_(input string) !(string, string) {
 		input[..2], input[2..]
 	} else {
 		new_bytes_parser_error(input, .crlf)
+	}
+}
+
+[inline]
+pub fn not_line_ending() BytesParser {
+	return not_line_ending_
+}
+
+fn not_line_ending_(input string) !(string, string) {
+	mut idx := 0
+
+	for idx < input.len {
+		if input[idx] == '\r'[0] {
+			if idx + 1 < input.len && input[idx + 1] == '\n'[0] {
+				break
+			} else {
+				return new_bytes_parser_error(input, .not_line_ending)
+			}
+		} else if input[idx] == '\n'[0] {
+			break
+		} else {
+			idx++
+		}
+	}
+
+	return input[..idx], input[idx..]
+}
+
+[inline]
+pub fn line_ending() BytesParser {
+	return line_ending_
+}
+
+fn line_ending_(input string) !(string, string) {
+	return if input.len > 0 && input[0] == '\r'[0] {
+		if input.len > 1 && input[1] == '\n'[0] {
+			input[..2], input[2..]
+		} else {
+			new_bytes_parser_error(input, .line_ending)
+		}
+	} else if input[0] == '\n'[0] {
+		input[..1], input[1..]
+	} else {
+		new_bytes_parser_error(input, .line_ending)
 	}
 }

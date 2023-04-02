@@ -296,3 +296,47 @@ fn test_crlf_err() {
 		crlf()(input) or { assert errors[i] == err }
 	}
 }
+
+fn test_not_line_ending() {
+	inputs := ['ab\r\nc', 'ab\nc', 'abc', '']
+	gots := ['ab', 'ab', 'abc', '']
+	remains := ['\r\nc', '\nc', '', '']
+
+	for i, input in inputs {
+		got, remain := not_line_ending()(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_not_line_ending_err() {
+	inputs := ['a\rb\nc', 'a\rbc']
+	errors := inputs.map(new_bytes_parser_error(it, .not_line_ending))
+
+	for i, input in inputs {
+		not_line_ending()(input) or { assert errors[i] == err }
+	}
+}
+
+fn test_line_ending() {
+	inputs := ['\r\n', '\n', '\r\nabc', '\nabc']
+	gots := ['\r\n', '\n', '\r\n', '\n']
+	remains := ['', '', 'abc', 'abc']
+
+	for i, input in inputs {
+		got, remain := line_ending()(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_line_ending_err() {
+	inputs := ['abc\r\n', 'abc\n', 'a\rb\nc', '']
+	errors := inputs.map(new_bytes_parser_error(it, .line_ending))
+
+	for i, input in inputs {
+		not_line_ending()(input) or { assert errors[i] == err }
+	}
+}

@@ -7,8 +7,8 @@ enum ErrorKind {
 }
 
 [inline]
-pub fn tag(ch byte) CharParser {
-	return fn [ch] (input string) !(byte, string) {
+pub fn tag(ch u8) CharParser {
+	return fn [ch] (input string) !(u8, string) {
 		return if input.len > 0 && input[0] == ch {
 			ch, input[1..]
 		} else {
@@ -19,7 +19,7 @@ pub fn tag(ch byte) CharParser {
 
 [inline]
 pub fn satisfy(predicate CharPredicate) CharParser {
-	return fn [predicate] (input string) !(byte, string) {
+	return fn [predicate] (input string) !(u8, string) {
 		return if input.len > 0 && predicate(input[0]) {
 			input[0], input[1..]
 		} else {
@@ -30,8 +30,28 @@ pub fn satisfy(predicate CharPredicate) CharParser {
 
 [inline]
 pub fn one_of(chars string) CharParser {
-	return fn [chars] (input string) !(byte, string) {
-		return if input.len > 0 && input[0] in chars.bytes() {
+	return one_of_u8s(chars.bytes())
+}
+
+[inline]
+pub fn one_of_u8s(bytes []u8) CharParser {
+	return fn [bytes] (input string) !(u8, string) {
+		return if input.len > 0 && input[0] in bytes {
+			input[0], input[1..]
+		} else {
+			new_char_parser_error(input, .one_of)
+		}
+	}
+}
+
+[inline]
+pub fn none_of(chars string) CharParser {
+	return none_of_u8s(chars.bytes())
+}
+
+pub fn none_of_u8s(bytes []u8) CharParser {
+	return fn [bytes] (input string) !(u8, string) {
+		return if input.len > 0 && input[0] !in bytes {
 			input[0], input[1..]
 		} else {
 			new_char_parser_error(input, .one_of)

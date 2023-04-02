@@ -281,7 +281,7 @@ fn test_escaped() {
 	esc := escaped(digit1(), '\\'[0], complete_character.as_bytes_parser(complete_character.one_of('"n\\')))
 	inputs := ['123;', '12\\"34;']
 	gots := ['123', '12\\"34']
-	
+
 	for i, input in inputs {
 		got, remain := esc(input)!
 

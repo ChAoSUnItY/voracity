@@ -248,22 +248,21 @@ pub fn escaped(normal BytesParser, control_char u8, escapable BytesParser) Bytes
 		for idx < input.len {
 			current_len := input.len - idx
 
-			if _, remain := normal(input) {
+			if got, remain := normal(input[idx..]) {
 				if remain.len == 0 {
 					// No remaining
 					return input, ''
-				}
-				if remain.len == current_len {
+				} else if remain.len == current_len {
 					// No consumption occured
 					return input[..idx], input[idx..]
 				} else {
-					idx++
+					idx += got.len
 				}
 			} else {
 				if input[idx] == control_char {
 					if idx + 1 < input.len {
-						next_char := input[idx + 1].ascii_str()
-						_, remain := escapable(next_char)!
+						aft_ctrl_char := input[idx + 1..]
+						_, remain := escapable(aft_ctrl_char)!
 
 						if remain.len == 0 {
 							// No remaining
@@ -279,7 +278,7 @@ pub fn escaped(normal BytesParser, control_char u8, escapable BytesParser) Bytes
 					if idx == 0 {
 						return new_bytes_parser_error(input, .escaped)
 					} else {
-						return input, ''
+						return input[..idx], input[idx..]
 					}
 				}
 			}

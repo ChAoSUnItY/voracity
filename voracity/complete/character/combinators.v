@@ -4,7 +4,8 @@ enum ErrorKind {
 	tag
 	satisfy
 	one_of
-	crlf
+	new_line
+	tab
 }
 
 [inline]
@@ -58,5 +59,31 @@ pub fn none_of_u8s(bytes []u8) CharParser {
 		} else {
 			new_char_parser_error(input, .one_of)
 		}
+	}
+}
+
+[inline]
+pub fn new_line() CharParser {
+	return new_line_
+}
+
+fn new_line_(input string) !(u8, string) {
+	return if input.len > 0 && input[0] == '\n'[0] {
+		'\n'[0], input[1..]
+	} else {
+		new_char_parser_error(input, .new_line)
+	}
+}
+
+[inline]
+pub fn tab() CharParser {
+	return tab_
+}
+
+fn tab_(input string) !(u8, string) {
+	return if input.len > 0 && input[0] == '\t'[0] {
+		'\t'[0], input[1..]
+	} else {
+		new_char_parser_error(input, .tab)
 	}
 }

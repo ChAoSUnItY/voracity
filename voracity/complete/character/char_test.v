@@ -98,3 +98,45 @@ fn test_none_of_err() {
 		a_b_c_none_of(input) or { assert errors[i] == err }
 	}
 }
+
+fn test_new_line() {
+	inputs := ['\n', '\nabc']
+	remains := ['', 'abc']
+
+	for i, input in inputs {
+		got, remain := new_line()(input)!
+
+		assert got == '\n'[0]
+		assert remain == remains[i]
+	}
+}
+
+fn test_new_line_err() {
+	inputs := ['\r\n', 'abc\n', '']
+	errors := inputs.map(new_char_parser_error(it, .new_line))
+
+	for i, input in inputs {
+		new_line()(input) or { assert errors[i] == err }
+	}
+}
+
+fn test_tab() {
+	inputs := ['\t', '\tabc']
+	remains := ['', 'abc']
+
+	for i, input in inputs {
+		got, remain := tab()(input)!
+
+		assert got == '\t'[0]
+		assert remain == remains[i]
+	}
+}
+
+fn test_tab_err() {
+	inputs := ['\n\t', 'abc\t', '']
+	errors := inputs.map(new_char_parser_error(it, .tab))
+
+	for i, input in inputs {
+		new_line()(input) or { assert errors[i] == err }
+	}
+}

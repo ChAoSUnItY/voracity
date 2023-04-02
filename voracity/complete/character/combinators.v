@@ -6,6 +6,7 @@ enum ErrorKind {
 	one_of
 	new_line
 	tab
+	anychar
 }
 
 [inline]
@@ -67,6 +68,7 @@ pub fn new_line() CharParser {
 	return new_line_
 }
 
+[inline]
 fn new_line_(input string) !(u8, string) {
 	return if input.len > 0 && input[0] == '\n'[0] {
 		'\n'[0], input[1..]
@@ -80,10 +82,25 @@ pub fn tab() CharParser {
 	return tab_
 }
 
+[inline]
 fn tab_(input string) !(u8, string) {
 	return if input.len > 0 && input[0] == '\t'[0] {
 		'\t'[0], input[1..]
 	} else {
 		new_char_parser_error(input, .tab)
+	}
+}
+
+[inline]
+pub fn anychar() CharParser {
+	return anychar_
+}
+
+[inline]
+fn anychar_(input string) !(u8, string) {
+	return if input.len > 0 {
+		input[0], input[1..]
+	} else {
+		new_char_parser_error(input, .anychar)
 	}
 }

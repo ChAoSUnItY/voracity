@@ -140,3 +140,24 @@ fn test_tab_err() {
 		new_line()(input) or { assert errors[i] == err }
 	}
 }
+
+fn test_anychar() {
+	inputs := ['a', 'ab', 'abc']
+	remains := ['', 'b', 'bc']
+
+	for i, input in inputs {
+		got, remain := anychar()(input)!
+
+		assert got == 'a'[0]
+		assert remain == remains[i]
+	}
+}
+
+fn test_anychar_err() {
+	inputs := ['']
+	errors := inputs.map(new_char_parser_error(it, .anychar))
+
+	for i, input in inputs {
+		anychar()(input) or { assert errors[i] == err }
+	}
+}

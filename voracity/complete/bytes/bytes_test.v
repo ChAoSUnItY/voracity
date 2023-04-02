@@ -340,3 +340,73 @@ fn test_line_ending_err() {
 		not_line_ending()(input) or { assert errors[i] == err }
 	}
 }
+
+fn test_alpha0() {
+	inputs := ['a', 'a123', 'abc123', '']
+	gots := ['a', 'a', 'abc', '']
+	remains := ['', '123', '123', '']
+
+	for i, input in inputs {
+		got, remain := alpha0()(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_alpha1() {
+	inputs := ['a', 'a123', 'abc123']
+	gots := ['a', 'a', 'abc']
+	remains := ['', '123', '123']
+
+	for i, input in inputs {
+		got, remain := alpha1()(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_alpha1_err() {
+	inputs := ['1a', '123abc', '']
+	errors := inputs.map(new_bytes_parser_error(it, .alpha1))
+
+	for i, input in inputs {
+		alpha1()(input) or { assert errors[i] == err }
+	}
+}
+
+fn test_digit0() {
+	inputs := ['1', '1abc', '123abc', '']
+	gots := ['1', '1', '123', '']
+	remains := ['', 'abc', 'abc', '']
+
+	for i, input in inputs {
+		got, remain := digit0()(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_digit1() {
+	inputs := ['1', '1abc', '123abc']
+	gots := ['1', '1', '123']
+	remains := ['', 'abc', 'abc']
+
+	for i, input in inputs {
+		got, remain := digit1()(input)!
+
+		assert got == gots[i]
+		assert remain == remains[i]
+	}
+}
+
+fn test_digit1_err() {
+	inputs := ['a1', 'abc123', '']
+	errors := inputs.map(new_bytes_parser_error(it, .digit1))
+
+	for i, input in inputs {
+		digit1()(input) or { assert errors[i] == err }
+	}
+}

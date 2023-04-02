@@ -1,7 +1,7 @@
 module bytes
 
 import voracity
-import voracity.complete.character
+import voracity.character
 
 enum ErrorKind {
 	tag
@@ -18,6 +18,8 @@ enum ErrorKind {
 	crlf
 	not_line_ending
 	line_ending
+	alpha1
+	digit1
 }
 
 [inline]
@@ -343,5 +345,89 @@ fn line_ending_(input string) !(string, string) {
 		input[..1], input[1..]
 	} else {
 		new_bytes_parser_error(input, .line_ending)
+	}
+}
+
+[inline]
+fn alpha0() BytesParser {
+	return alpha0_
+}
+
+fn alpha0_(input string) !(string, string) {
+	mut idx := 0
+
+	for idx < input.len {
+		if character.is_alphabetic(input[idx]) {
+			idx++
+		} else {
+			break
+		}
+	}
+
+	return input[..idx], input[idx..]
+}
+
+[inline]
+fn alpha1() BytesParser {
+	return alpha1_
+}
+
+fn alpha1_(input string) !(string, string) {
+	mut idx := 0
+
+	for idx < input.len {
+		if character.is_alphabetic(input[idx]) {
+			idx++
+		} else {
+			break
+		}
+	}
+
+	return if idx == 0 {
+		new_bytes_parser_error(input, .alpha1)
+	} else {
+		input[..idx], input[idx..]
+	}
+}
+
+[inline]
+fn digit0() BytesParser {
+	return digit0_
+}
+
+fn digit0_(input string) !(string, string) {
+	mut idx := 0
+
+	for idx < input.len {
+		if character.is_digit(input[idx]) {
+			idx++
+		} else {
+			break
+		}
+	}
+
+	return input[..idx], input[idx..]
+}
+
+[inline]
+fn digit1() BytesParser {
+	return digit1_
+}
+
+fn digit1_(input string) !(string, string) {
+	mut idx := 0
+
+	for idx < input.len {
+		if character.is_digit(input[idx]) {
+			idx++
+		} else {
+			break
+		}
+	}
+
+	return if idx == 0 {
+		new_bytes_parser_error(input, .digit1)
+	} else {
+		input[..idx], input[idx..]
 	}
 }

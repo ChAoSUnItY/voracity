@@ -246,13 +246,11 @@ pub fn escaped(normal BytesParser, control_char u8, escapable BytesParser) Bytes
 		mut idx := 0
 
 		for idx < input.len {
-			current_len := input.len - idx
-
 			if got, remain := normal(input[idx..]) {
 				if remain.len == 0 {
 					// No remaining
 					return input, ''
-				} else if remain.len == current_len {
+				} else if remain.len == input.len - idx {
 					// No consumption occured
 					return input[..idx], input[idx..]
 				} else {
@@ -261,8 +259,7 @@ pub fn escaped(normal BytesParser, control_char u8, escapable BytesParser) Bytes
 			} else {
 				if input[idx] == control_char {
 					if idx + 1 < input.len {
-						aft_ctrl_char := input[idx + 1..]
-						_, remain := escapable(aft_ctrl_char)!
+						_, remain := escapable(input[idx + 1..])!
 
 						if remain.len == 0 {
 							// No remaining

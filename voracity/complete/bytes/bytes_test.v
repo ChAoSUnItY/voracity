@@ -59,9 +59,6 @@ fn test_is_not() {
 	for i, input in inputs {
 		got, remain := not_space(input)!
 
-		println(got)
-		println(remain)
-
 		assert got == gots[i]
 		assert remain == remains[i]
 	}
@@ -276,5 +273,26 @@ fn test_take_until1_err() {
 
 	for i, input in inputs {
 		until_eof(input) or { assert errors[i] == err }
+	}
+}
+
+fn test_crlf() {
+	inputs := ['\r\n', '\r\nabc']
+	remains := ['', 'abc']
+
+	for i, input in inputs {
+		got, remain := crlf()(input)!
+
+		assert got == '\r\n'
+		assert remain == remains[i]
+	}
+}
+
+fn test_crlf_err() {
+	inputs := ['abc\r\n', '']
+	errors := inputs.map(new_bytes_parser_error(it, .crlf))
+
+	for i, input in inputs {
+		crlf()(input) or { assert errors[i] == err }
 	}
 }

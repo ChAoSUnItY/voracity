@@ -11,6 +11,7 @@ enum ErrorKind {
 	take
 	take_until
 	take_until1
+	crlf
 }
 
 [inline]
@@ -228,5 +229,18 @@ pub fn take_until1(tag string) BytesParser {
 		} else {
 			input[..idx], input[idx..]
 		}
+	}
+}
+
+[inline]
+pub fn crlf() BytesParser {
+	return crlf_
+}
+
+fn crlf_(input string) !(string, string) {
+	return if input.len >= 2 && input[..2] == '\r\n' {
+		input[..2], input[2..]
+	} else {
+		new_bytes_parser_error(input, .crlf)
 	}
 }

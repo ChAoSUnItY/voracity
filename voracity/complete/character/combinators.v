@@ -4,6 +4,7 @@ enum ErrorKind {
 	tag
 	satisfy
 	one_of
+	crlf
 }
 
 [inline]
@@ -49,6 +50,7 @@ pub fn none_of(chars string) CharParser {
 	return none_of_u8s(chars.bytes())
 }
 
+[inline]
 pub fn none_of_u8s(bytes []u8) CharParser {
 	return fn [bytes] (input string) !(u8, string) {
 		return if input.len > 0 && input[0] !in bytes {

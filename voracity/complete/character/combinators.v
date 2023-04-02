@@ -1,5 +1,7 @@
 module character
 
+import voracity { BytesParser, CharParser, CharPredicate }
+
 enum ErrorKind {
 	tag
 	satisfy
@@ -7,6 +9,17 @@ enum ErrorKind {
 	new_line
 	tab
 	anychar
+}
+
+[inline]
+pub fn as_bytes_parser(parser CharParser) BytesParser {
+	return fn [parser] (input string) !(string, string) {
+		return if got, remain := parser(input) {
+			got.ascii_str(), remain
+		} else {
+			err
+		}
+	}
 }
 
 [inline]

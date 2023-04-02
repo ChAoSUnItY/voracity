@@ -1,6 +1,7 @@
 module bytes
 
 import voracity.character
+import voracity.complete.character as complete_character
 
 fn test_tag() {
 	hello_word_tag := tag('Hello')
@@ -273,6 +274,19 @@ fn test_take_until1_err() {
 
 	for i, input in inputs {
 		until_eof(input) or { assert errors[i] == err }
+	}
+}
+
+fn test_escaped() {
+	esc := escaped(digit1(), '\\'[0], complete_character.as_bytes_parser(complete_character.one_of('"n\\')))
+	inputs := ['123;', '12\\"34;']
+	gots := ['123', '12\\"34']
+	
+	for i, input in inputs {
+		got, remain := esc(input)!
+
+		assert got == gots[i]
+		assert remain == ';'
 	}
 }
 

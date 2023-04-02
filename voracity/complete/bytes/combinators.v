@@ -1,6 +1,6 @@
 module bytes
 
-import voracity
+import voracity { BytesParser, BytesPredicate }
 import voracity.character
 
 enum ErrorKind {
@@ -241,7 +241,7 @@ pub fn take_until1(tag string) BytesParser {
 }
 
 [inline]
-pub fn escaped(normal voracity.IBytesParser, control_char u8, escapable voracity.IBytesParser) BytesParser {
+pub fn escaped(normal BytesParser, control_char u8, escapable BytesParser) BytesParser {
 	return fn [normal, control_char, escapable] (input string) !(string, string) {
 		mut idx := 0
 

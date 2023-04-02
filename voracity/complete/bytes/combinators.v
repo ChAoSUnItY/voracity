@@ -292,6 +292,7 @@ pub fn crlf() BytesParser {
 	return crlf_
 }
 
+[inline]
 fn crlf_(input string) !(string, string) {
 	return if input.len >= 2 && input[..2] == '\r\n' {
 		input[..2], input[2..]
@@ -330,6 +331,7 @@ pub fn line_ending() BytesParser {
 	return line_ending_
 }
 
+[inline]
 fn line_ending_(input string) !(string, string) {
 	return if input.len > 0 && input[0] == '\r'[0] {
 		if input.len > 1 && input[1] == '\n'[0] {

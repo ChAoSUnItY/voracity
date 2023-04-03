@@ -1,9 +1,10 @@
 module bytes
 
+import strings
 import voracity { BytesParser, BytesPredicate }
 import voracity.character
 
-enum ErrorKind {
+pub enum ErrorKind {
 	tag
 	tag_no_case
 	is_not
@@ -282,6 +283,54 @@ pub fn escaped(normal BytesParser, control_char u8, escapable BytesParser) Bytes
 		}
 
 		return input[..idx], input[idx..]
+	}
+}
+
+[inline]
+pub fn escaped_transform(normal BytesParser, control_char u8, transform BytesParser) BytesParser {
+	return fn [normal, control_char, transform] (input string) !(string, string) {
+		mut idx := 0
+		mut builder := strings.new_builder(input.len)
+
+		for idx < input.len {
+			if got, remain := normal(input[idx..]) {
+				if remain.len == 0 {
+					// No remaining
+					return builder.str(), ''
+				} else if remain.len == input.len - idx {
+					// No consumption occured
+					return builder.str(), input[idx..]
+				} else {
+					idx += got.len
+					builder.write_string(got)
+				}
+			} else {
+				if input[idx] == control_char {
+					if idx + 1 < input.len {
+						got, remain := transform(input[idx + 1..])!
+
+						if remain.len == 0 {
+							// No remaining
+							return builder.str(), ''
+						} else {
+							idx += 2
+							builder.write_string(got)
+						}
+					} else {
+						// Invalid escape (out of bound)
+						return new_bytes_parser_error(input, .escaped)
+					}
+				} else {
+					if idx == 0 {
+						return new_bytes_parser_error(input, .escaped)
+					} else {
+						return builder.str(), input[idx..]
+					}
+				}
+			}
+		}
+
+		return builder.str(), input[idx..]
 	}
 }
 

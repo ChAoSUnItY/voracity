@@ -2,7 +2,7 @@ module character
 
 import voracity { CharParser, CharPredicate }
 
-enum ErrorKind {
+pub enum ErrorKind {
 	tag
 	satisfy
 	one_of

@@ -1,7 +1,7 @@
 module character
 
-import voracity
+import voracity.errors
 
-fn new_char_parser_error(remaining string, kind ErrorKind) IError {
-	return voracity.new_parse_error(remaining, voracity.ErrorKind(kind))
+pub fn new_char_parser_error(remaining string, kind ErrorKind) IError {
+	return errors.new_parse_error(remaining, errors.ErrorKind(kind))
 }

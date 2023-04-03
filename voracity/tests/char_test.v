@@ -1,7 +1,9 @@
-module character
+module tests
+
+import voracity.complete.character
 
 fn test_tag() {
-	a_tag := tag('a'[0])
+	a_tag := character.tag('a'[0])
 	inputs := ['a', 'abc']
 	remains := ['', 'bc']
 
@@ -14,9 +16,9 @@ fn test_tag() {
 }
 
 fn test_tag_err() {
-	a_tag := tag('a'[0])
+	a_tag := character.tag('a'[0])
 	inputs := [' abc', '']
-	errors := inputs.map(new_char_parser_error(it, .tag))
+	errors := inputs.map(character.new_char_parser_error(it, .tag))
 
 	for i, input in inputs {
 		a_tag(input) or { assert errors[i] == err }
@@ -24,7 +26,7 @@ fn test_tag_err() {
 }
 
 fn test_satisfy() {
-	a_b_satisfy := satisfy(fn (b u8) bool {
+	a_b_satisfy := character.satisfy(fn (b u8) bool {
 		return b == 'a'[0] || b == 'b'[0]
 	})
 	inputs := ['abc', 'bcd']
@@ -40,11 +42,11 @@ fn test_satisfy() {
 }
 
 fn test_satisfy_err() {
-	a_b_satisfy := satisfy(fn (b u8) bool {
+	a_b_satisfy := character.satisfy(fn (b u8) bool {
 		return b == 'a'[0] || b == 'b'[0]
 	})
 	inputs := ['cde', '']
-	errors := inputs.map(new_char_parser_error(it, .tag))
+	errors := inputs.map(character.new_char_parser_error(it, .tag))
 
 	for i, input in inputs {
 		a_b_satisfy(input) or { assert errors[i] == err }
@@ -52,7 +54,7 @@ fn test_satisfy_err() {
 }
 
 fn test_one_of() {
-	a_b_c_one_of := one_of('abc')
+	a_b_c_one_of := character.one_of('abc')
 	inputs := ['a', 'b', 'c', 'abc', 'bcd', 'cde']
 	gots := ['a', 'b', 'c', 'a', 'b', 'c'].map(it[0])
 	remains := ['', '', '', 'bc', 'cd', 'de']
@@ -66,9 +68,9 @@ fn test_one_of() {
 }
 
 fn test_one_of_err() {
-	a_b_c_one_of := one_of('abc')
+	a_b_c_one_of := character.one_of('abc')
 	inputs := ['def', '']
-	errors := inputs.map(new_char_parser_error(it, .one_of))
+	errors := inputs.map(character.new_char_parser_error(it, .one_of))
 
 	for i, input in inputs {
 		a_b_c_one_of(input) or { assert errors[i] == err }
@@ -76,7 +78,7 @@ fn test_one_of_err() {
 }
 
 fn test_none_of() {
-	a_b_c_none_of := none_of('abc')
+	a_b_c_none_of := character.none_of('abc')
 	inputs := ['x', 'y', 'z', 'ijk', 'jkl', 'klm']
 	gots := ['x', 'y', 'z', 'i', 'j', 'k'].map(it[0])
 	remains := ['', '', '', 'jk', 'kl', 'lm']
@@ -90,9 +92,9 @@ fn test_none_of() {
 }
 
 fn test_none_of_err() {
-	a_b_c_none_of := none_of('abc')
+	a_b_c_none_of := character.none_of('abc')
 	inputs := ['a', 'b', 'c', 'abc', 'bcd', 'cde']
-	errors := inputs.map(new_char_parser_error(it, .one_of))
+	errors := inputs.map(character.new_char_parser_error(it, .one_of))
 
 	for i, input in inputs {
 		a_b_c_none_of(input) or { assert errors[i] == err }
@@ -104,7 +106,7 @@ fn test_new_line() {
 	remains := ['', 'abc']
 
 	for i, input in inputs {
-		got, remain := new_line()(input)!
+		got, remain := character.new_line()(input)!
 
 		assert got == '\n'[0]
 		assert remain == remains[i]
@@ -113,10 +115,10 @@ fn test_new_line() {
 
 fn test_new_line_err() {
 	inputs := ['\r\n', 'abc\n', '']
-	errors := inputs.map(new_char_parser_error(it, .new_line))
+	errors := inputs.map(character.new_char_parser_error(it, .new_line))
 
 	for i, input in inputs {
-		new_line()(input) or { assert errors[i] == err }
+		character.new_line()(input) or { assert errors[i] == err }
 	}
 }
 
@@ -125,7 +127,7 @@ fn test_tab() {
 	remains := ['', 'abc']
 
 	for i, input in inputs {
-		got, remain := tab()(input)!
+		got, remain := character.tab()(input)!
 
 		assert got == '\t'[0]
 		assert remain == remains[i]
@@ -134,10 +136,10 @@ fn test_tab() {
 
 fn test_tab_err() {
 	inputs := ['\n\t', 'abc\t', '']
-	errors := inputs.map(new_char_parser_error(it, .tab))
+	errors := inputs.map(character.new_char_parser_error(it, .tab))
 
 	for i, input in inputs {
-		new_line()(input) or { assert errors[i] == err }
+		character.new_line()(input) or { assert errors[i] == err }
 	}
 }
 
@@ -146,7 +148,7 @@ fn test_anychar() {
 	remains := ['', 'b', 'bc']
 
 	for i, input in inputs {
-		got, remain := anychar()(input)!
+		got, remain := character.anychar()(input)!
 
 		assert got == 'a'[0]
 		assert remain == remains[i]
@@ -155,9 +157,9 @@ fn test_anychar() {
 
 fn test_anychar_err() {
 	inputs := ['']
-	errors := inputs.map(new_char_parser_error(it, .anychar))
+	errors := inputs.map(character.new_char_parser_error(it, .anychar))
 
 	for i, input in inputs {
-		anychar()(input) or { assert errors[i] == err }
+		character.anychar()(input) or { assert errors[i] == err }
 	}
 }

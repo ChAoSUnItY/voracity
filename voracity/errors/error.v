@@ -1,4 +1,4 @@
-module voracity
+module errors
 
 interface ErrorKind {}
 

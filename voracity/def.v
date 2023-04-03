@@ -1,5 +1,7 @@
 module voracity
 
+pub type Parser[I, O, R] = fn (I) !(O, R)
+
 // complete.bytes
 
 pub type BytesParser = fn (string) !(string, string)

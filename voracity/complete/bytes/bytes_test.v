@@ -290,6 +290,16 @@ fn test_escaped() {
 	}
 }
 
+fn test_escaped_err() {
+	esc := escaped(digit1(), '\\'[0], complete_character.one_of('"n\\').as_bytes_parser())
+	inputs := ['abcd']
+	errors := inputs.map(new_bytes_parser_error(it, .escaped))
+
+	for i, input in inputs {
+		esc(input) or { assert errors[i] == err }
+	}
+}
+
 fn test_crlf() {
 	inputs := ['\r\n', '\r\nabc']
 	remains := ['', 'abc']

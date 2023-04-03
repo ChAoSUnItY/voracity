@@ -278,7 +278,7 @@ fn test_take_until1_err() {
 }
 
 fn test_escaped() {
-	esc := escaped(digit1(), '\\'[0], complete_character.as_bytes_parser(complete_character.one_of('"n\\')))
+	esc := escaped(digit1(), '\\'[0], complete_character.one_of('"n\\').as_bytes_parser())
 	inputs := ['123;', '12\\"34;']
 	gots := ['123', '12\\"34']
 

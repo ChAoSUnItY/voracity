@@ -42,3 +42,8 @@ fn test_alt_empty_err() {
 		empty_alt(input) or { assert err == errors[i] }
 	}
 }
+
+fn test_permutation() {
+	some := branch.permutation[string, []string, string]()
+	some('')!
+}
